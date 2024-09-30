@@ -63,7 +63,7 @@ type Mutation {
   login(loginDto: LoginDto!): Auth!
   createPost(createPostInput: CreatePostInput!): Post!
   updatePost(updatePostInput: UpdatePostInput!): Post!
-  removePost(id: Int!): Post!
+  removePost(id: String!): Post!
   createComment(createCommentInput: CreateCommentInput!): Comment!
   updateComment(updateCommentInput: UpdateCommentInput!): Comment!
   removeComment(id: Int!): Comment!
@@ -150,10 +150,10 @@ input CreatePostInput {
 scalar Upload
 
 input UpdatePostInput {
-  description: String!
+  description: String
 
   """Url of the Image"""
-  file: Upload!
+  file: Upload
   id: String!
 }
 

@@ -29,14 +29,24 @@ export class PostsResolver {
   findOne(@Args('id', { type: () => String }) id: string) {
     return this.postsService.findOne(id);
   }
-
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => Post)
-  updatePost(@Args('updatePostInput') updatePostInput: UpdatePostInput) {
-    return this.postsService.update(updatePostInput.id, updatePostInput);
+  updatePost(
+    @Args('updatePostInput') updatePostInput: UpdatePostInput,
+    @CurrentUser() currentUser: any,
+  ) {
+    return this.postsService.update(
+      updatePostInput.id,
+      updatePostInput,
+      currentUser.userId,
+    );
   }
-
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => Post)
-  removePost(@Args('id', { type: () => Int }) id: number) {
-    return this.postsService.remove(id);
+  removePost(
+    @Args('id', { type: () => String }) id: string,
+    @CurrentUser() currentUser: any,
+  ) {
+    return this.postsService.remove(id, currentUser.userId);
   }
 }
