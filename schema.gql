@@ -25,6 +25,10 @@ type Auth {
   access_token: String!
 }
 
+type LogoutResponse {
+  access_token: String
+}
+
 type Post {
   _id: ID!
   userId: ID!
@@ -45,7 +49,6 @@ type Query {
   users: [User!]!
   user(id: Int!): User!
   searchUsersByName(query: String!, currentUserId: String!): [User!]!
-  auth(id: Int!): Auth!
   posts: [Post!]!
   post(id: String!): Post!
   comments: [Comment!]!
@@ -58,8 +61,7 @@ type Mutation {
   removeUser(id: Int!): User!
   followUser(userId: String!): User!
   createAuth(createAuthInput: CreateAuthInput!): Auth!
-  updateAuth(updateAuthInput: UpdateAuthInput!): Auth!
-  removeAuth(id: Int!): Auth!
+  logout: LogoutResponse
   login(loginDto: LoginDto!): Auth!
   createPost(createPostInput: CreatePostInput!): Post!
   updatePost(updatePostInput: UpdatePostInput!): Post!
@@ -125,12 +127,6 @@ input UpdateUserInput {
 input CreateAuthInput {
   """Example field (placeholder)"""
   exampleField: Int!
-}
-
-input UpdateAuthInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
 }
 
 input LoginDto {

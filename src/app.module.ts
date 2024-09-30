@@ -20,6 +20,7 @@ import { ConfigModule } from '@nestjs/config';
       // plugins: [ApolloServerPluginLandingPageLocalDefault()],
       playground: true, // Disables GraphQL Playground
       introspection: true, // Enables GraphQL Introspection
+      context: ({ req }) => ({ req }),
     }),
     MongooseModule.forRoot(process.env.MONGODB_URI),
     UsersModule,

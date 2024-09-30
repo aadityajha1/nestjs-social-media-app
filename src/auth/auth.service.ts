@@ -5,30 +5,16 @@ import { LoginDto } from './dto/login.dto';
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { RedisService } from './redis.service';
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
     private userService: UsersService,
+    private redisService: RedisService,
   ) {}
   create(createAuthInput: CreateAuthInput) {
     return 'This action adds a new auth';
-  }
-
-  findAll() {
-    return `This action returns all auth`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  update(id: number, updateAuthInput: UpdateAuthInput) {
-    return `This action updates a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
   }
 
   async login(loginDto: LoginDto): Promise<{ access_token: string }> {
@@ -43,5 +29,17 @@ export class AuthService {
     return {
       access_token: this.jwtService.sign(payload),
     };
+  }
+
+  async logout(token: string) {
+    const decoded = this.jwtService.decode(token) as { exp: number };
+    console.log('Decoded token:', decoded, token);
+    if (decoded && decoded.exp) {
+      console.log('Is decoded adn exp');
+      const expiresIn = decoded.exp - Math.floor(Date.now() / 1000);
+      // Add the token to the Redis blacklist with the time until it expires
+      await this.redisService.blacklistToken(token, expiresIn);
+    }
+    return { access_token: token };
   }
 }

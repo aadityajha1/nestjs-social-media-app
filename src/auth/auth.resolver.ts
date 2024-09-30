@@ -1,9 +1,11 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
 import { Auth } from './entities/auth.entity';
 import { CreateAuthInput } from './dto/create-auth.input';
 import { UpdateAuthInput } from './dto/update-auth.input';
 import { LoginDto } from './dto/login.dto';
+import { ExtractJwt } from 'passport-jwt';
+import { LogoutResponse } from './dto/logoutresponse.dto';
 
 @Resolver(() => Auth)
 export class AuthResolver {
@@ -14,24 +16,12 @@ export class AuthResolver {
     return this.authService.create(createAuthInput);
   }
 
-  @Query(() => [Auth], { name: 'auth' })
-  findAll() {
-    return this.authService.findAll();
-  }
+  @Mutation(() => LogoutResponse, { nullable: true })
+  logout(@Context() context: any) {
+    const token = context.req.headers.authorization?.split(' ')[1];
+    // const token = ExtractJwt.fromAuthHeaderAsBearerToken()(context.req);
 
-  @Query(() => Auth, { name: 'auth' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.authService.findOne(id);
-  }
-
-  @Mutation(() => Auth)
-  updateAuth(@Args('updateAuthInput') updateAuthInput: UpdateAuthInput) {
-    return this.authService.update(updateAuthInput.id, updateAuthInput);
-  }
-
-  @Mutation(() => Auth)
-  removeAuth(@Args('id', { type: () => Int }) id: number) {
-    return this.authService.remove(id);
+    return this.authService.logout(token);
   }
 
   @Mutation(() => Auth)
