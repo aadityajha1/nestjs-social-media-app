@@ -35,6 +35,8 @@
     "class-validator": "^0.14.1",
     "dotenv": "^16.4.5",
     "graphql": "^16.9.0",
+    "graphql-upload": "^14.0.0",
+    "graphql-upload-ts": "^2.1.2",
     "mongoose": "^8.7.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",

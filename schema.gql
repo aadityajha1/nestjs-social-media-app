@@ -26,8 +26,13 @@ type Auth {
 }
 
 type Post {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  _id: ID!
+  userId: ID!
+  description: String
+  imageUrl: String
+  isDeleted: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type Comment {
@@ -42,7 +47,7 @@ type Query {
   searchUsersByName(query: String!, currentUserId: String!): [User!]!
   auth(id: Int!): Auth!
   posts: [Post!]!
-  post(id: Int!): Post!
+  post(id: String!): Post!
   comments: [Comment!]!
   comment(id: Int!): Comment!
 }
@@ -134,14 +139,22 @@ input LoginDto {
 }
 
 input CreatePostInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  """Description for the post"""
+  description: String!
+
+  """Url of the Image"""
+  file: Upload!
 }
 
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
 input UpdatePostInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+  description: String!
+
+  """Url of the Image"""
+  file: Upload!
+  id: String!
 }
 
 input CreateCommentInput {
