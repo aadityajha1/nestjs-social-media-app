@@ -18,13 +18,16 @@ export class PostsService {
     const { description, file } = createPostInput;
     const { createReadStream, filename } = await file;
     const uploadDir = join(process.cwd(), './uploads');
+    const name = filename.split('.')[0];
+    const ext = filename.split('.').pop();
+    const newFilename = `${name}-${Date.now()}.${ext}`;
     const currentUser = await this.userModule.findById(currentUserId);
     if (!existsSync(uploadDir)) {
       mkdirSync(uploadDir);
     }
     return new Promise(async (resolve) => {
       createReadStream()
-        .pipe(createWriteStream(join(uploadDir, `${filename}`)))
+        .pipe(createWriteStream(join(uploadDir, `${newFilename}`)))
         .on('finish', () => {
           const post = new this.postModel({
             description,
@@ -56,6 +59,7 @@ export class PostsService {
   ) {
     const { description, file } = updatePostInput;
     const post = await this.postModel.findById(id);
+
     if (!post) throw new BadRequestException('Post not found');
     if (post.userId.toString() !== currentUserId)
       throw new HttpException('Unauthorized', 403);
@@ -66,12 +70,15 @@ export class PostsService {
     if (file) {
       const { createReadStream, filename } = await file;
       const uploadDir = join(process.cwd(), './uploads');
+      const name = filename.split('.')[0];
+      const ext = filename.split('.').pop();
+      const newFilename = `${name}-${Date.now()}.${ext}`;
       if (!existsSync(uploadDir)) {
         mkdirSync(uploadDir);
       }
       return new Promise(async (resolve) => {
         createReadStream()
-          .pipe(createWriteStream(join(uploadDir, `${filename}`)))
+          .pipe(createWriteStream(join(uploadDir, `${newFilename}`)))
           .on('finish', () => {
             fs.unlink(path.join(uploadDir, post.imageUrl), function (err) {
               if (err) {
@@ -98,7 +105,8 @@ export class PostsService {
     if (!post) throw new BadRequestException('Post not found');
     if (post.userId.toString() !== currentUserId)
       throw new HttpException('Unauthorized', 403);
-    const removedPost = await this.postModel.findByIdAndDelete(post._id);
-    return removedPost;
+    post.isDeleted = true;
+    await post.save();
+    return post;
   }
 }
