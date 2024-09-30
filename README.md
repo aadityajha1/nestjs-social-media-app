@@ -22,7 +22,7 @@ This project is a TypeScript-based GraphQL API application built using the NestJ
 
 Create a `.env` file in the root directory of the project and add the following environment variables:
 
-````properties
+```properties
 MONGODB_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret_key
 ```
@@ -30,18 +30,20 @@ JWT_SECRET=your_jwt_secret_key
 ### Installation
 
 #### 1. Clone the repository:
+
 ```bash
 git clone https://github.com/yourusername/socialmediaapp.git
 cd socialmediaapp
 ```
 
 #### 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 #### 3. Run the application in development mode:
+
 ```bash
 npm run start:dev
 ```
-````
