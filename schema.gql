@@ -40,8 +40,12 @@ type Post {
 }
 
 type Comment {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  _id: ID!
+  userId: User!
+  postId: Post!
+  content: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
 
 type Query {
@@ -53,7 +57,7 @@ type Query {
   post(id: String!): Post!
   searchPosts(limit: Int! = 10, page: Int! = 0, query: String): [Post!]!
   comments: [Comment!]!
-  comment(id: Int!): Comment!
+  comment(id: String!): Comment!
 }
 
 type Mutation {
@@ -69,7 +73,7 @@ type Mutation {
   removePost(id: String!): Post!
   createComment(createCommentInput: CreateCommentInput!): Comment!
   updateComment(updateCommentInput: UpdateCommentInput!): Comment!
-  removeComment(id: Int!): Comment!
+  removeComment(id: String!): Comment!
 }
 
 input CreateUserInput {
@@ -155,12 +159,20 @@ input UpdatePostInput {
 }
 
 input CreateCommentInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  """Post Id in which comment is to be created"""
+  postId: String!
+
+  """Content of the comment"""
+  content: String!
 }
 
 input UpdateCommentInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+  """Post Id in which comment is to be created"""
+  postId: String
+
+  """Updated Content of the comment"""
+  content: String!
+
+  """Comment Id which is to be updated"""
+  commentId: String!
 }

@@ -118,7 +118,6 @@ export class PostsService {
     order: 'asc' | 'desc' = 'desc',
     filter: any = {},
   ) {
-    // const userId = new Schema.Types.ObjectId(currentUserId); // The logged-in user's ID
     const skip = (page - 1) * limit;
 
     const followingUsers = await this.userModule

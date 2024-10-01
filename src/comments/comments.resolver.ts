@@ -3,14 +3,20 @@ import { CommentsService } from './comments.service';
 import { Comment } from './entities/comment.entity';
 import { CreateCommentInput } from './dto/create-comment.input';
 import { UpdateCommentInput } from './dto/update-comment.input';
+import { UseGuards } from '@nestjs/common';
+import { GqlAuthGuard } from 'src/auth/auth.guard';
+import { CurrentUser } from 'src/auth/current-user.decorator';
 
 @Resolver(() => Comment)
 export class CommentsResolver {
   constructor(private readonly commentsService: CommentsService) {}
-
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => Comment)
-  createComment(@Args('createCommentInput') createCommentInput: CreateCommentInput) {
-    return this.commentsService.create(createCommentInput);
+  createComment(
+    @Args('createCommentInput') createCommentInput: CreateCommentInput,
+    @CurrentUser() currentUser: any,
+  ) {
+    return this.commentsService.create(createCommentInput, currentUser.userId);
   }
 
   @Query(() => [Comment], { name: 'comments' })
@@ -19,17 +25,27 @@ export class CommentsResolver {
   }
 
   @Query(() => Comment, { name: 'comment' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
+  findOne(@Args('id', { type: () => String }) id: string) {
     return this.commentsService.findOne(id);
   }
-
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => Comment)
-  updateComment(@Args('updateCommentInput') updateCommentInput: UpdateCommentInput) {
-    return this.commentsService.update(updateCommentInput.id, updateCommentInput);
+  updateComment(
+    @Args('updateCommentInput') updateCommentInput: UpdateCommentInput,
+    @CurrentUser() currentUser: any,
+  ) {
+    return this.commentsService.update(
+      updateCommentInput.commentId,
+      updateCommentInput,
+      currentUser.userId,
+    );
   }
-
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => Comment)
-  removeComment(@Args('id', { type: () => Int }) id: number) {
-    return this.commentsService.remove(id);
+  removeComment(
+    @Args('id', { type: () => String }) id: string,
+    @CurrentUser() currentUser: any,
+  ) {
+    return this.commentsService.remove(id, currentUser.userId);
   }
 }

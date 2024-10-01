@@ -11,5 +11,6 @@ import { UsersModule } from 'src/users/users.module';
     UsersModule,
   ],
   providers: [PostsResolver, PostsService],
+  exports: [PostsService, MongooseModule],
 })
 export class PostsModule {}
