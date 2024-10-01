@@ -31,7 +31,7 @@ type LogoutResponse {
 
 type Post {
   _id: ID!
-  userId: ID!
+  userId: User!
   description: String
   imageUrl: String
   isDeleted: Boolean!
@@ -51,6 +51,7 @@ type Query {
   searchUsersByName(query: String!, currentUserId: String!): [User!]!
   posts: [Post!]!
   post(id: String!): Post!
+  searchPosts(limit: Int! = 10, page: Int! = 0, query: String): [Post!]!
   comments: [Comment!]!
   comment(id: Int!): Comment!
 }

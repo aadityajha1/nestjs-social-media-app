@@ -109,4 +109,64 @@ export class PostsService {
     await post.save();
     return post;
   }
+
+  async getPostFeeds(
+    currentUserId: string,
+    page: number = 1,
+    limit: number = 10,
+    sort: string = 'createdAt',
+    order: 'asc' | 'desc' = 'desc',
+    filter: any = {},
+  ) {
+    // const userId = new Schema.Types.ObjectId(currentUserId); // The logged-in user's ID
+    const skip = (page - 1) * limit;
+
+    const followingUsers = await this.userModule
+      .findById(currentUserId)
+      .select('following');
+    // .lean();
+
+    if (!followingUsers || followingUsers.following.length === 0) {
+      return [];
+    }
+
+    const followingIds = followingUsers.following;
+
+    const pipeline = [
+      {
+        $match: {
+          userId: { $in: followingIds },
+        },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'userId',
+        },
+      },
+      {
+        $unwind: '$userId',
+      },
+      {
+        $project: {
+          _id: 1,
+          description: 1,
+          imageUrl: 1,
+          createdAt: 1,
+          'userId._id': 1,
+          'userId.name': 1,
+          'userId.profile_picture': 1,
+        },
+      },
+      {
+        $sample: { size: limit }, // Randomize the posts by shuffling
+      },
+    ];
+
+    // Execute the aggregation pipeline with pagination
+    const userFeed = await this.postModel.aggregate(pipeline).exec();
+    return userFeed;
+  }
 }

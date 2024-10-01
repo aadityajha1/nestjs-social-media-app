@@ -1,7 +1,7 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as MongooseSchema } from 'mongoose';
-import { UserDocument } from 'src/users/entities/user.entity';
+import { User, UserDocument } from 'src/users/entities/user.entity';
 
 export type PostDocument = Post & Document;
 
@@ -11,7 +11,7 @@ export class Post extends Document {
   @Field(() => ID)
   _id: string;
 
-  @Field(() => ID)
+  @Field(() => User)
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User' })
   userId: UserDocument['_id'];
 

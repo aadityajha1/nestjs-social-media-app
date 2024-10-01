@@ -49,4 +49,15 @@ export class PostsResolver {
   ) {
     return this.postsService.remove(id, currentUser.userId);
   }
+
+  @UseGuards(GqlAuthGuard)
+  @Query(() => [Post], { name: 'searchPosts' })
+  searchPosts(
+    @Args('limit', { type: () => Int, defaultValue: 10 }) limit: number,
+    @Args('page', { type: () => Int, defaultValue: 0 }) page: number,
+    @Args('query', { nullable: true }) query: string,
+    @CurrentUser() currentUser: any,
+  ) {
+    return this.postsService.getPostFeeds(currentUser.userId, page, limit);
+  }
 }
