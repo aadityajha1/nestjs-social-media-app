@@ -52,7 +52,7 @@ type Query {
   getHello: String!
   users: [User!]!
   user(id: Int!): User!
-  searchUsersByName(query: String!, currentUserId: String!): [User!]!
+  searchUsersByName(query: String!): [User!]!
   posts: [Post!]!
   post(id: String!): Post!
   searchPosts(limit: Int! = 10, page: Int! = 0, query: String): [Post!]!

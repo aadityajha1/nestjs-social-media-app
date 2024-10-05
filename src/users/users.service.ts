@@ -28,11 +28,9 @@ export class UsersService {
         'Password must be at least 7 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
       );
     }
-    // Hash the password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Create a new user instance
     const newUser = new this.userModel({
       name,
       dob,
@@ -43,7 +41,6 @@ export class UsersService {
       bio,
     });
 
-    // Save the new user in the database
     return newUser.save();
   }
 
@@ -70,10 +67,10 @@ export class UsersService {
     currentUserId: string,
   ): Promise<any[]> {
     const users = await this.userModel.find({
-      name: { $regex: query, $options: 'i' }, // case-insensitive search for full name
+      name: { $regex: query, $options: 'i' },
     });
     console.log('Users', users);
-    // Map the users and add isFollowing field
+
     return users.map((user) => ({
       _id: user._id,
       name: user.name,

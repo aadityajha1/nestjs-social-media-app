@@ -24,13 +24,14 @@ export class UsersResolver {
   findOne(@Args('id', { type: () => Int }) id: number) {
     return this.usersService.findOne(id);
   }
-
+  @UseGuards(GqlAuthGuard)
   @Query(() => [User], { name: 'searchUsersByName' })
   searchUsersByName(
     @Args('query') query: string,
-    @Args('currentUserId', { type: () => String }) currentUserId: string,
+    // @Args('currentUserId', { type: () => String }) currentUserId: string,
+    @CurrentUser() currentUser: any,
   ) {
-    return this.usersService.searchUsersByName(query, currentUserId);
+    return this.usersService.searchUsersByName(query, currentUser.userId);
   }
 
   @Mutation(() => User)
