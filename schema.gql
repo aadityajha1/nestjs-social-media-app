@@ -65,9 +65,10 @@ type Mutation {
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: Int!): User!
   followUser(userId: String!): User!
-  createAuth(createAuthInput: CreateAuthInput!): Auth!
   logout: LogoutResponse
   login(loginDto: LoginDto!): Auth!
+  googleAuth: Auth!
+  googleRedirect: Auth!
   createPost(createPostInput: CreatePostInput!): Post!
   updatePost(updatePostInput: UpdatePostInput!): Post!
   removePost(id: String!): Post!
@@ -127,11 +128,6 @@ input UpdateUserInput {
   """Followers of the user"""
   followers: [String!]
   id: Int!
-}
-
-input CreateAuthInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
 }
 
 input LoginDto {

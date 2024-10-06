@@ -7,6 +7,7 @@ import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
 import { UsersModule } from 'src/users/users.module';
 import { RedisService } from './redis.service';
+import { GoogleStrategy } from './google.strategy';
 
 @Module({
   imports: [
@@ -21,7 +22,13 @@ import { RedisService } from './redis.service';
       inject: [ConfigService],
     }),
   ],
-  providers: [JwtStrategy, AuthResolver, AuthService, RedisService],
+  providers: [
+    JwtStrategy,
+    AuthResolver,
+    AuthService,
+    RedisService,
+    GoogleStrategy,
+  ],
   exports: [JwtModule],
 })
 export class AuthModule {}
